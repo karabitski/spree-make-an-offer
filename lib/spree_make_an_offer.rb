@@ -1,5 +1,4 @@
 require 'spree_core'
-require 'spree_make_an_offer_hooks'
 
 module SpreeMakeAnOffer
   class Engine < Rails::Engine

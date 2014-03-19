@@ -1,14 +1,19 @@
 class OfferMailer < ActionMailer::Base
   helper "spree/base"
-  
+
   def pending(offer)
-    @subject    = '[PENDING OFFER] ' + Spree::Config[:site_name] + ' - ' + offer.product.name
-    @recipients = Spree::Config[:order_from]
-    @from       = Spree::Config[:order_from]
-    @sent_on    = Time.now
-    @body       = {:offer => offer}
+    #@subject    = '[PENDING OFFER] ' + Spree::Config[:site_name] + ' - ' + offer.product.name
+    #@recipients = Spree::Config[:order_from]
+    #@from       = Spree::Config[:order_from]
+    #@sent_on    = Time.now
+    #@body       = {:offer => offer}
+
+    @offer = offer
+    subject = "#{Spree::Config[:site_name]} #{t('offers_mail.pending.subject')} - #{offer.product.name}"
+    mail(:to => Spree::MailMethod.first.preferred_smtp_username,
+         :subject => subject)
   end
-  
+
   def rejected(offer)
     @subject    = Spree::Config[:site_name] + ' has rejected your offer on #' + offer.product.name
     @recipients = offer.user.email
@@ -16,8 +21,8 @@ class OfferMailer < ActionMailer::Base
     @bcc        = order_bcc
     @sent_on    = Time.now
     @body       = {:offer => offer}
-  end  
-  
+  end
+
   def accepted(offer)
     @subject    = Spree::Config[:site_name] + ' has accepted your offer on #' + offer.product.name
     @recipients = offer.user.email
@@ -25,7 +30,7 @@ class OfferMailer < ActionMailer::Base
     @bcc        = order_bcc
     @sent_on    = Time.now
     @body       = {:offer => offer}
-  end  
+  end
 
   private
   def order_bcc

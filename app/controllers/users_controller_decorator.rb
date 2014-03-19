@@ -1,6 +1,6 @@
-UsersController.class_eval do
+Spree::UsersController.class_eval do
   
-  helper :products
+  #helper :products
   
   def show_before
     @orders = @user.orders.checkout_complete
