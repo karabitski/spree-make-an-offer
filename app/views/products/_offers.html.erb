@@ -1,54 +1,33 @@
-<% if !@offer.product_id.nil? || @product.has_stock?  %>
-<%= render :partial => 'products/offers_style' %>
-<%= render :partial => 'products/offers_js' %>
-<%= form_tag('/make_an_offer', :method => :post) do %>
+<% if @offer.product_id.present? || @product.has_stock?  %>
+  <%= form_tag('/make_an_offer', :method => :post) do %>
+    <%= hidden_field_tag 'offer_id', (@offer.id.nil? ? nil : @offer.id) %>
+    <%= hidden_field_tag 'offer_product_id', @product.id %>
+    <%= hidden_field_tag 'offer_variant_id', @product.master.id %>
+    <%= hidden_field_tag 'offer_previous_price', (@previous.nil? ? '0.00' : @previous.price) %>
+    <%= hidden_field_tag 'offer_permalink', (@product.permalink) %>
 
-<%= hidden_field_tag 'offer_id', (@offer.id.nil? ? nil : @offer.id) %>
-<%= hidden_field_tag 'offer_product_id', @product.id %>
-<%= hidden_field_tag 'offer_variant_id', @product.master.id %>
-<%= hidden_field_tag 'offer_previous_price', (@previous.nil? ? '0.00' : @previous.price) %>
-<%= hidden_field_tag 'offer_permalink', (@product.permalink) %>
+    <div id="offer-form">
+      <h3><%= t("make_an_offer") %></h3>
 
-<div id="cart-form">
-  <br />
-  <p class="prices">
-    <% if @offer.product_id.nil? %>
-    <h3><%= t("or_make_an_offer!") %></h3>
-    <%= (@previous.nil? ? '' : '<p>' + t('previous_high_offer') + ' <span class="price selling">' + money(@previous.price).to_s + '</span></p>').html_safe %>
-    <% else %>
-    <%= (@previous.nil? ? '' : '<p>' + t('highest_offer') + ' <span class="price selling">' + money(@previous.price).to_s + '</span></p>').html_safe %>
-    <h3><%= t("your_current_offer") %></h3>
-  <p align='center'><%= offer_status(@offer)%></p>
+      <% if @offer.product_id.nil? %>
+        <%= (@previous.nil? ? '' : '<p>' + t('previous_high_offer') + ' <span class="price selling">' + @previous.price.to_f + '</span></p>').html_safe %>
+      <% else %>
+        <p id="current-offer"><%= t("your_current_offer") %>: <%= @offer_price %></p>
+      <% end %>
+
+      <% if @offer.accepted_at.nil? %>
+        <%= text_field_tag 'offer_price', '', id: 'offer-price',class: "title", size: 8, placeholder: @offer_price %>
+      <% else %>
+        <%= money @offer %>
+      <% end %>
+
+      <% if @offer.accepted_at.nil? %>
+        <%= button_tag t((@offer.product_id.nil? ? 'make_offer' : 'update_offer')), :class => 'small secondary main', :type => :submit %>
+      <% end %>
+    </div>
   <% end %>
-  <div style="float: left;">
-    <%= label_tag 'offer_price', t('offer_price') %><br />
-    <% if @offer.accepted_at.nil? %>
-    <%= text_field_tag 'offer_price', '',:class => "title", :size => 8, :placeholder => money(@offer.price).to_s %>
-    <% else %>
-    <%= money @offer %>
-    <% end %>
-
-  </div>
-  <% if @offer.accepted_at.nil? %>
-  <div style="float: right;">
-    <br />
-    <button type='submit' class='large primary'>
-      <%= image_tag('/images/update.png') + t((@offer.product_id.nil? ? 'make_offer' : 'update_offer')) %></button>
-  </div>
-  <% end %>
-  </p>
-</div>
-<% end %>
 <% end %>
 
-<% content_for :head do %>
-<!-- page specific scripts for datePicker -->
-<script type="text/javascript" charset="utf-8">
-  Date.firstDayOfWeek = 0;
-  Date.format = 'mm/dd/yyyy';
-  $(function()
-  {
-  $('.date-pick').datepicker();
-  });
+<script type="text/javascript">
+  $("#offer-price").maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
 </script>
-<% end %>
