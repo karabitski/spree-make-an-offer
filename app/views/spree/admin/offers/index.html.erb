@@ -35,10 +35,10 @@
         <%= link_to offer.product.name, product_path(offer.product.permalink) %>
       </td>
       <td>
-        <%= number_to_currency offer.product.price %>
+        <%= Spree::Money.new(offer.product.price, no_currency: true).to_s %>
       </td>
       <td>
-        <%= number_to_currency offer.price %>
+        <%= Spree::Money.new(offer.price, no_currency: true).to_s %>
       </td>
       <td>
         <%= offer.created_at.strftime('%m/%d/%Y') %>
