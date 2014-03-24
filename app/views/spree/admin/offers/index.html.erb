@@ -1,6 +1,8 @@
-<h1><%= "#{t("actions.listing")} #{t("offers")}" %></h1>
+<% content_for :page_title do %>
+  <%= "#{t("actions.listing")} #{t("offers")}" %>
+<% end %>
 
-<table class="index" width="545">
+<table class="index sortable">
   <thead>
     <tr>
       <th>
@@ -22,7 +24,9 @@
         <%=t("expires")%>
       </th>
       <th>
+        <%= t(:status) %>
       </th>
+      <th class="actions"></th>
     </tr>
   </thead>
   <tbody>
@@ -35,19 +39,25 @@
         <%= link_to offer.product.name, product_path(offer.product.permalink) %>
       </td>
       <td>
-        <%= Spree::Money.new(offer.product.price, no_currency: true).to_s %>
+        <%= Spree::Money.new(offer.product.price).to_s %>
       </td>
       <td>
         <%= Spree::Money.new(offer.price, no_currency: true).to_s %>
       </td>
       <td>
-        <%= offer.created_at.strftime('%m/%d/%Y') %>
+        <%= offer.created_at.strftime('%d/%m/%y às %H:%m') %>
       </td>
       <td>
-        <%= offer.expires_at.strftime('%m/%d/%Y') %>
+        <%= offer.expires_at.strftime('%d/%m/%y às %H:%m') %>
       </td>
       <td>
         <%= offer_status(offer) %>
+      </td>
+      <td class="actions">
+        <% if offer.accepted_at.nil? && offer.rejected_at.nil? %>
+          <%= link_to_with_icon "icon-capture", t(:accept_offer), accepted_admin_offers_path(offer), no_text: true, data: {action: 'capture'} %>
+          <%= link_to_with_icon "icon-void", t(:reject_offer), rejected_admin_offers_path(offer), no_text: true, data: {action: 'void'} %>
+        <% end %>
       </td>
     </tr><% end %>
   </tbody>

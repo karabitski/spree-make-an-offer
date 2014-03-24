@@ -15,7 +15,6 @@ Spree::ProductsController.class_eval do
       @offer = Spree::Offer.new(:price => 0.00)
       @offer_expires_at = (Date.today + 5).strftime('%m/%d/%Y')
     else
-      # named_scopes returns :all, select :first
       @offer_expires_at = @offer.expires_at.strftime('%m/%d/%Y')
     end
 

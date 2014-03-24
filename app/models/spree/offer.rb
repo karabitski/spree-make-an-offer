@@ -4,7 +4,7 @@ module Spree
     belongs_to :product
     belongs_to :variant
 
-    attr_accessible :price, :user_id, :product_id, :variant_id
+    attr_accessible :price, :user_id, :product_id, :variant_id, :accepted_at, :rejected_at
 
     validates_presence_of :price
     validates_presence_of :expires_at

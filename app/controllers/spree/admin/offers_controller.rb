@@ -1,7 +1,7 @@
+# coding: utf-8
 module Spree
   module Admin
     class OffersController < ResourceController
-      #resource_controller
 
       def index
         @offers = Offer.pending_offers.order('spree_offers.created_at, spree_offers.product_id').page(params[:page])
@@ -9,30 +9,36 @@ module Spree
 
       def accepted
         @offer = Offer.update(params[:offer_id], :accepted_at => Date.today)
-        @order = Order.find(:first,
-                            :conditions => {:user_id => @offer.user_id, :state => 'in_progress'})
-        if @order.nil?
-          @order = Order.create(:user_id => @offer.user_id)
+
+        if @offer.user.orders.incomplete.size > 1
+          @order = @offer.user.orders.incomplete.last
+        else
+          @order = @offer.user.orders.incomplete.first
         end
-        @offer.variant.price = @offer.price
+
+        if @order.nil?
+          @order = @offer.user.orders.create
+        else
+          @order.empty!
+          @order.save
+        end
+
         @order.add_variant(@offer.variant)
+        @order.adjustments.create amount: (@offer.price - @order.total), label: "Desconto por oferta do dia #{@offer.created_at.strftime('%d/%m/%y às %H:%m')}"
 
-        @order.update_totals!
-
-        OfferMailer.deliver_accepted(@offer)
-
-        redirect_to admin_offers_url
+        if @order.save
+          OfferMailer.accepted(@offer, @order).deliver
+          redirect_to admin_offers_url
+        else
+          redirect_to admin_offers_url, error: 'Erro ao salvar o pedido.'
+        end
       end
 
       def rejected
         @offer = Offer.update(params[:offer_id], :rejected_at => Date.today)
-        OfferMailer.deliver_rejected(@offer)
+        OfferMailer.rejected(@offer).deliver
         redirect_to admin_offers_url
       end
-
-      # update.response do |wants|
-      #   wants.html { redirect_to collection_url }
-      # end
 
     end
   end

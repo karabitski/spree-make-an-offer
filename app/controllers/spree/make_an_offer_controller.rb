@@ -9,12 +9,10 @@ module Spree
       when offer_price == 0
         flash[:error] = t('offer_rejected_validation_0')
       else
-        if params[:offer_id].to_i == 0 || params[:offer_id].nil?
-          @offer = Offer.new(:user_id => current_user.id,
-                             :product_id => params[:offer_product_id],
-                             :variant_id => params[:offer_variant_id])
-        else
-          @offer = Offer.find(params[:offer_id])
+        @offer = Offer.where(id: params[:offer_id], accepted_at: nil, rejected_at: nil).first
+
+        if @offer.blank?
+          @offer = Offer.new(user_id: current_user.id, product_id: params[:offer_product_id], variant_id: params[:offer_variant_id])
         end
 
         @offer.price = offer_price
@@ -28,6 +26,7 @@ module Spree
         end
 
       end
+
       respond_to do |format|
         format.html { redirect_to '/products/' + params[:offer_permalink] }
       end

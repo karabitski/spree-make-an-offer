@@ -2,42 +2,21 @@ class OfferMailer < ActionMailer::Base
   helper "spree/base"
 
   def pending(offer)
-    #@subject    = '[PENDING OFFER] ' + Spree::Config[:site_name] + ' - ' + offer.product.name
-    #@recipients = Spree::Config[:order_from]
-    #@from       = Spree::Config[:order_from]
-    #@sent_on    = Time.now
-    #@body       = {:offer => offer}
-
     @offer = offer
     subject = "#{Spree::Config[:site_name]} #{t('offers_mail.pending.subject')} - #{offer.product.name}"
-    mail(:to => Spree::MailMethod.first.preferred_smtp_username,
-         :subject => subject)
+    mail(:to => Spree::MailMethod.first.preferred_smtp_username, :subject => subject)
   end
 
   def rejected(offer)
-    @subject    = Spree::Config[:site_name] + ' has rejected your offer on #' + offer.product.name
-    @recipients = offer.user.email
-    @from       = Spree::Config[:order_from]
-    @bcc        = order_bcc
-    @sent_on    = Time.now
-    @body       = {:offer => offer}
+    @offer = offer
+    subject = "#{Spree::Config[:site_name]} #{t('offers_mail.rejected.subject')} - #{offer.product.name}"
+    mail(:to => @offer.user.email, :subject => subject)
   end
 
-  def accepted(offer)
-    @subject    = Spree::Config[:site_name] + ' has accepted your offer on #' + offer.product.name
-    @recipients = offer.user.email
-    @from       = Spree::Config[:order_from]
-    @bcc        = order_bcc
-    @sent_on    = Time.now
-    @body       = {:offer => offer}
-  end
-
-  private
-  def order_bcc
-      bcc = [Spree::Config[:order_bcc] || "", Spree::Config[:mail_bcc] || ""]
-      bcc = bcc.inject([]){|array, config_string| array + config_string.split(",")}
-      bcc = bcc.collect{|email| email.strip}
-      bcc = bcc.uniq
-      bcc
+  def accepted(offer, order)
+    @offer = offer
+    @order = order
+    subject = "#{Spree::Config[:site_name]} #{t('offers_mail.accepted.subject')} - #{offer.product.name}"
+    mail(:to => @offer.user.email, :subject => subject)
   end
 end
