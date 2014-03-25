@@ -16,7 +16,7 @@ module Spree
         end
 
         @offer.price = offer_price
-        @offer.expires_at = DateTime.now+3.days
+        @offer.expires_at = DateTime.now + offer_expiration_days.days
 
         if @offer.save
           OfferMailer.pending(@offer).deliver
@@ -36,6 +36,14 @@ module Spree
 
     def currency_param_to_f(string)
       string.gsub('.', '').gsub(',', '.').to_f
+    end
+
+    def offer_expiration_days
+      if Spree::Config.offer_expiration.present?
+        Spree::Config.offer_expiration.to_i
+      else
+        5
+      end
     end
 
   end
