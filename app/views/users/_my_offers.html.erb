@@ -1,25 +1,23 @@
-<h2><%= t("my_offers") %></h2>
+<h2><%= t("offer.my_offers") %></h2>
 
 <table class="order-summary" width="545">
   <thead>
     <tr>
-      <th><%= t("product") %></th>
-      <th><%= t("list_price") %></th>
-      <th><%= t("offer_price") %></th>
-      <th><%= t("expires") %></th>
-      <th><%= t("created") %></th>
-      <th><%= t("comments") %></th>
+      <th><%= t("offer.product") %></th>
+      <th><%= t("offer.list_price") %></th>
+      <th><%= t("offer.offer_price") %></th>
+      <th><%= t("offer.created") %></th>
+      <th><%= t("offer.expires") %></th>
     </tr>
   </thead>
   <tbody>
   <% @offers.each do |offer| %>
     <tr class="<%= cycle('even', 'odd') %>">
       <td><%= link_to offer.product.name, product_url(offer.product.permalink) %></td>
-      <td><%= product_price offer.product %></td>
-      <td><%= product_price offer %></td>
-      <td><%= offer.expires_at.strftime('%m/%d/%Y') %></td>
-      <td><%= offer.created_at.strftime('%m/%d/%Y') %></td>
-      <td><%= offer.comment %></td>
+      <td><%= Spree::Money.new(offer.product.price).to_s %></td>
+      <td><%= Spree::Money.new(offer.price, no_currency: true) %></td>
+      <td><%= offer.created_at.strftime('%d/%m/%y às %H:%m') %></td>
+      <td><%= offer.expires_at.strftime('%d/%m/%y às %H:%m') %></td>
     </tr>
   <% end %>
   </tbody>

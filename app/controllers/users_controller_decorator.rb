@@ -1,6 +1,8 @@
 Spree::UsersController.class_eval do
-  def show_before
-    @orders = @user.orders.checkout_complete
-    @offers = Offer.user_offers(@user.id).pending_offers.find(:all, :include => :product)
+
+  before_filter :before_show, :only => [:show]
+
+  def before_show
+    @offers = Spree::Offer.user_offers(@user.id).pending_offers.find(:all, :include => :product)
   end
 end
