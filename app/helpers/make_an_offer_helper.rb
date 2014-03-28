@@ -10,4 +10,10 @@ module MakeAnOfferHelper
       content_tag(:span, t(:offer_created, date: offer.created_at.strftime('%d/%m/%y às %H:%m')), class: 'state pending')
     end
   end
+
+  def previous_price
+    if @previous.present?
+      "<p>#{t('offer.previous_high_offer')} <span class=\"price selling\">#{Spree::Money.new(@previous.price, no_currency: true)}</span></p>".html_safe
+    end
+  end
 end
