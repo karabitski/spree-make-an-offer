@@ -7,7 +7,7 @@ module Spree
 
       case
       when offer_price == 0
-        flash[:error] = t('offer_rejected_validation_0')
+        flash[:error] = t('offer.offer_rejected_validation_0')
       else
         @offer = Offer.where(id: params[:offer_id], accepted_at: nil, rejected_at: nil).first
 
@@ -20,9 +20,9 @@ module Spree
 
         if @offer.save
           OfferMailer.pending(@offer).deliver
-          flash[:notice] = t('offer_has_been_submitted')
+          flash[:notice] = t('offer.offer_has_been_submitted')
         else
-          flash[:error] = t('offer_error_not_submitted')
+          flash[:error] = t('offer.offer_error_not_submitted')
         end
 
       end

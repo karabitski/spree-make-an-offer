@@ -1,5 +1,5 @@
 <% content_for :page_title do %>
-  <%= "#{t("actions.listing")} #{t("offers")}" %>
+  <%= "#{t('actions.listing')} #{t('offer.title')}" %>
 <% end %>
 
 <table class="index sortable">
@@ -55,8 +55,8 @@
       </td>
       <td class="actions">
         <% if offer.accepted_at.nil? && offer.rejected_at.nil? %>
-          <%= link_to_with_icon "icon-capture", t(:accept_offer), accepted_admin_offers_path(offer), no_text: true, data: {action: 'capture'} %>
-          <%= link_to_with_icon "icon-void", t(:reject_offer), rejected_admin_offers_path(offer), no_text: true, data: {action: 'void'} %>
+          <%= link_to_with_icon "icon-capture", t('offer.accept_offer'), accepted_admin_offers_path(offer), no_text: true, data: {action: 'capture'} %>
+          <%= link_to_with_icon "icon-void", t('offer.reject_offer'), rejected_admin_offers_path(offer), no_text: true, data: {action: 'void'} %>
         <% end %>
       </td>
     </tr><% end %>
