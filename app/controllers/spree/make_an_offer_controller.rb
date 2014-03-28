@@ -1,6 +1,8 @@
 module Spree
   class MakeAnOfferController < ApplicationController
 
+    before_filter :auth_user, only: :create
+
     def create
       # Fix when current_user.nil?
       offer_price = currency_param_to_f(params[:offer_price])
@@ -33,6 +35,11 @@ module Spree
     end
 
     private
+
+    def auth_user
+      session["user_return_to"] = request.referer
+      redirect_to login_path unless current_user.present?
+    end
 
     def currency_param_to_f(string)
       string.gsub('.', '').gsub(',', '.').to_f
