@@ -11,4 +11,4 @@ Deface::Override.new(:virtual_path  => "spree/users/show",
 Deface::Override.new(:virtual_path  => "spree/layouts/admin",
                      :name          => "add_offers_tab_to_admin_layout",
                      :insert_bottom => "[data-hook='admin_tabs']",
-                     :text          => "<%= tab 'offers.title', :url => spree.admin_offers_path %>")
+                     :text          => "<%= tab t('offer.title'), :url => spree.admin_offers_path %>")
