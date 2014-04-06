@@ -1,0 +1,7 @@
+The product's <%= @offer.product.name %> counter offer just was accepted.
+
+<% if Rails.env == 'development' %>
+  Click <%= link_to 'here', "http://localhost:3000/admin/offers" %> to view it.
+<% else %>
+  Click <%= link_to 'here', "#{Spree::Config.site_url}/admin/offers" %> to view it.
+<% end %>

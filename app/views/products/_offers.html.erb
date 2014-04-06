@@ -9,6 +9,14 @@
     <div id="product-offer">
       <h3><%= t("offer.make_an_offer") %></h3>
 
+      <h4><%= t('offer.make_an_offer_subtitle')%></h4>
+
+      <%= content_tag :p, link_to(t('offer.make_another_offer'), 'javascript:;', onclick: '$("#offer_fields").toggle();') if @offer.accepted_at.present? %>
+      <div id="offer_fields" style="<%= 'display:none;' if @offer.accepted_at.present? %>">
+        <%= text_field_tag 'offer_price', '', id: 'offer-price',class: "title", size: 8, placeholder: @offer_price %>
+        <%= button_tag t((@offer.product_id.nil? ? 'offer.make_an_offer' : 'offer.update_offer')), :class => 'small secondary main', :type => :submit %>
+      </div>
+
       <% if @offer.accepted_at.nil? %>
         <% if @offer.product_id.nil? %>
           <%= previous_price %>
@@ -19,12 +27,6 @@
         <%= t('offer.offer_accepted_text') %>
         <%= @offer_price %>
       <% end %>
-
-      <%= content_tag :p, link_to(t('offer.make_another_offer'), 'javascript:;', onclick: '$("#offer_fields").toggle();') if @offer.accepted_at.present? %>
-      <div id="offer_fields" style="<%= 'display:none;' if @offer.accepted_at.present? %>">
-        <%= text_field_tag 'offer_price', '', id: 'offer-price',class: "title", size: 8, placeholder: @offer_price %>
-        <%= button_tag t((@offer.product_id.nil? ? 'offer.make_an_offer' : 'offer.update_offer')), :class => 'small secondary main', :type => :submit %>
-      </div>
     </div>
   <% end %>
 <% end %>

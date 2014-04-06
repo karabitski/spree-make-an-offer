@@ -1,0 +1,11 @@
+You offer received an counter offer!
+
+The suggested price is <% @offer.counter_price %>.
+
+<% if Rails.env == 'development' %>
+  You can accept this offer by clicking <%= link_to 'here', "http://localhost:3000/accept-counter-offer/#{@offer.id}" %>.
+<% else %>
+  You can accept this offer by clicking <%= link_to 'here', "#{Spree::Config.site_url}/accept-counter-offer/#{@offer.id}" %>.
+<% end %>
+
+Thanks!

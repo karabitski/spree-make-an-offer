@@ -15,6 +15,8 @@ module Spree
 
         if @offer.blank?
           @offer = Offer.new(user_id: current_user.id, product_id: params[:offer_product_id], variant_id: params[:offer_variant_id])
+        else
+          @offer.clear_counter_offer
         end
 
         @offer.price = offer_price
@@ -32,6 +34,12 @@ module Spree
       respond_to do |format|
         format.html { redirect_to '/products/' + params[:offer_permalink] }
       end
+    end
+
+    def accept_counter_offer
+      @offer = Offer.update(params[:offer_id].to_i, counter_accepted: DateTime.now)
+      OfferMailer.counter_offer_accepted(@offer).deliver
+      redirect_to root_path, notice: t('offer.counter_offer_accepted_submited')
     end
 
     private

@@ -6,22 +6,25 @@
   <thead>
     <tr>
       <th>
-        <%=t("email")%>
+        <%=t("offer.email.text")%>
       </th>
       <th>
-        <%=t("product")%>
+        <%=t("offer.product")%>
       </th>
       <th>
-        <%=t("list_price")%>
+        <%=t("offer.list_price")%>
       </th>
       <th>
-        <%=t("offer_price")%>
+        <%=t("offer.offer_price")%>
       </th>
       <th>
-        <%=t("created")%>
+        <%=t("offer.counter_offer")%>
       </th>
       <th>
-        <%=t("expires")%>
+        <%=t("offer.created")%>
+      </th>
+      <th>
+        <%=t("offer.expires")%>
       </th>
       <th>
         <%= t(:status) %>
@@ -45,6 +48,16 @@
         <%= Spree::Money.new(offer.price, no_currency: true).to_s %>
       </td>
       <td>
+        <% if offer.counter_price.present? %>
+          <%= Spree::Money.new(offer.counter_price, no_currency: true).to_s %>
+        <% else %>
+          <%= form_tag counter_offer_admin_offers_path(offer) do |f| %>
+            <%= text_field_tag :counter_price, nil, id: 'new-offer-price' %>
+            <%= submit_tag 'Enviar', id: 'submit-new-offer' %>
+          <% end %>
+        <% end %>
+      </td>
+      <td>
         <%= offer.created_at.strftime('%d/%m/%y às %H:%m') %>
       </td>
       <td>
@@ -63,3 +76,7 @@
   </tbody>
 </table>
 <%= paginate @offers %>
+
+<script type="text/javascript">
+  $("#new-offer-price").maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
+</script>

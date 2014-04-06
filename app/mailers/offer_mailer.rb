@@ -13,6 +13,18 @@ class OfferMailer < ActionMailer::Base
     mail(:to => @offer.user.email, :subject => subject)
   end
 
+  def counter_offer(offer)
+    @offer = offer
+    subject = "#{Spree::Config[:site_name]} - #{t('offer.email.counter_offer.subject')} - #{offer.product.name}"
+    mail(:to => @offer.user.email, :subject => subject)
+  end
+
+  def counter_offer_accepted(offer)
+    @offer = offer
+    subject = "#{Spree::Config[:site_name]} - #{t('offer.email.counter_offer_accepted.subject')} - #{offer.product.name}"
+    mail(:to => Spree::MailMethod.first.preferred_smtp_username, :subject => subject)
+  end
+
   def accepted(offer, order)
     @offer = offer
     @order = order

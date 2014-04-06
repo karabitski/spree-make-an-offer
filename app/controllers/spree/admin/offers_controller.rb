@@ -7,6 +7,13 @@ module Spree
         @offers = Offer.pending_offers.order('spree_offers.created_at, spree_offers.product_id').page(params[:page])
       end
 
+      def counter_offer
+        @offer = Offer.update(params[:offer_id], counter_price: currency_param_to_f(params[:counter_price]))
+        OfferMailer.counter_offer(@offer).deliver
+
+        redirect_to admin_offers_path, notice: t('offer.counter_offer_sent')
+      end
+
       def accepted
         @offer = Offer.update(params[:offer_id], :accepted_at => Date.today)
 
@@ -38,6 +45,12 @@ module Spree
         @offer = Offer.update(params[:offer_id], :rejected_at => Date.today)
         OfferMailer.rejected(@offer).deliver
         redirect_to admin_offers_url
+      end
+
+      private
+
+      def currency_param_to_f(string)
+        string.gsub('.', '').gsub(',', '.').to_f
       end
 
     end
