@@ -14,7 +14,7 @@
       <%= content_tag :p, link_to(t('offer.make_another_offer'), 'javascript:;', onclick: '$("#offer_fields").toggle();') if @offer.accepted_at.present? %>
       <div id="offer_fields" style="<%= 'display:none;' if @offer.accepted_at.present? %>">
         <%= text_field_tag 'offer_price', '', id: 'offer-price',class: "title", size: 8, placeholder: @offer_price %>
-        <%= button_tag t((@offer.product_id.nil? ? 'offer.make_an_offer' : 'offer.update_offer')), :class => 'small secondary main', :type => :submit %>
+        <%= button_tag t((@offer.product_id.nil? ? 'offer.submit_offer' : 'offer.update_offer')), :class => 'small secondary main', :type => :submit %>
       </div>
 
       <% if @offer.accepted_at.nil? %>
