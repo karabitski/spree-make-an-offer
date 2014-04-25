@@ -26,7 +26,11 @@ module Spree
           OfferMailer.pending(@offer).deliver
           flash[:notice] = t('offer.offer_has_been_submitted')
         else
-          flash[:error] = t('offer.offer_error_not_submitted')
+          if @offer.errors.any?
+            flash[:error] = @offer.errors.messages.values.flatten.join
+          else
+            flash[:error] = t('offer.offer_error_not_submitted')
+          end
         end
 
       end
