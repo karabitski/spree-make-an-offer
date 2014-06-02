@@ -1,25 +1,27 @@
-<h2><%= t("offer.my_offers") %></h2>
+<% if (Spree::Config.offer_module.present? && Spree::Config.offer_module) %>
+  <h2><%= t("offer.my_offers") %></h2>
 
-<table class="order-summary" width="545">
-  <thead>
-    <tr>
-      <th><%= t("offer.product") %></th>
-      <th><%= t("offer.list_price") %></th>
-      <th><%= t("offer.offer_price") %></th>
-      <th><%= t("offer.created") %></th>
-      <th><%= t("offer.expires") %></th>
-    </tr>
-  </thead>
-  <tbody>
-  <% @offers.each do |offer| %>
-    <tr class="<%= cycle('even', 'odd') %>">
-      <td><%= link_to offer.product.name, product_url(offer.product.permalink) %></td>
-      <td><%= Spree::Money.new(offer.product.price).to_s %></td>
-      <td><%= Spree::Money.new(offer.price, no_currency: true) %></td>
-      <td><%= offer.created_at.strftime('%d/%m/%y às %H:%m') %></td>
-      <td><%= offer.expires_at.strftime('%d/%m/%y às %H:%m') %></td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
-<br />
+  <table class="order-summary" width="545">
+    <thead>
+      <tr>
+        <th><%= t("offer.product") %></th>
+        <th><%= t("offer.list_price") %></th>
+        <th><%= t("offer.offer_price") %></th>
+        <th><%= t("offer.created") %></th>
+        <th><%= t("offer.expires") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @offers.each do |offer| %>
+        <tr class="<%= cycle('even', 'odd') %>">
+          <td><%= link_to offer.product.name, product_url(offer.product.permalink) %></td>
+          <td><%= Spree::Money.new(offer.product.price).to_s %></td>
+          <td><%= Spree::Money.new(offer.price, no_currency: true) %></td>
+          <td><%= offer.created_at.strftime('%d/%m/%y às %H:%m') %></td>
+          <td><%= offer.expires_at.strftime('%d/%m/%y às %H:%m') %></td>
+        </tr>
+<% end %>
+    </tbody>
+  </table>
+  <br />
+<% end %>
