@@ -2,6 +2,7 @@ class CreateSpreeOffers < ActiveRecord::Migration
   def self.up
     create_table :spree_offers do |t|
       t.integer :user_id
+      t.integer :store_id
       t.integer :product_id
       t.integer :variant_id
       t.decimal  :price, :precision => 8, :scale => 2, :null => false
