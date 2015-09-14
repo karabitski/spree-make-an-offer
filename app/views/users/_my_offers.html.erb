@@ -14,11 +14,11 @@
     <tbody>
       <% @offers.each do |offer| %>
         <tr class="<%= cycle('even', 'odd') %>">
-          <td><%= link_to offer.product.name, product_url(offer.product.permalink) %></td>
+          <td><%= link_to offer.product.name, product_url(offer.product) %></td>
           <td><%= Spree::Money.new(offer.product.price).to_s %></td>
           <td><%= Spree::Money.new(offer.price, no_currency: true) %></td>
-          <td><%= offer.created_at.strftime('%d/%m/%y às %H:%m') %></td>
-          <td><%= offer.expires_at.strftime('%d/%m/%y às %H:%m') %></td>
+          <td><%= offer.created_at.strftime('%d/%m/%y %H:%m') %></td>
+          <td><%= offer.expires_at.strftime('%d/%m/%y %H:%m') %></td>
         </tr>
 <% end %>
     </tbody>

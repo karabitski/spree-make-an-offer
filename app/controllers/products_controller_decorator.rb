@@ -3,13 +3,11 @@ Spree::ProductsController.class_eval do
   helper :make_an_offer
 
   def before_show
-    @product = Spree::Product.find_by_permalink!(params[:id])
-
-    if current_user.present?
-      @offer = Spree::Offer.user_offers(current_user.id).product_offers(@product.id).pending_offers.last # TODO: Get offer with max price
+    @product = Spree::Product.friendly.find params[:id]
+    if spree_current_user.present?
+      @offer = Spree::Offer.user_offers(spree_current_user.id).product_offers(@product.id).pending_offers.last # TODO: Get offer with max price
     end
-
-    @previous = Spree::Offer.find(:first, :order => 'price DESC', :conditions => {:product_id => @product.id})
+    @previous = @product.offers.order('price DESC').first
 
     if @offer == nil
       @offer = Spree::Offer.new(:price => 0.00)
@@ -19,6 +17,7 @@ Spree::ProductsController.class_eval do
     end
 
     @offer_price = Spree::Money.new(@offer.price, no_currency: true).to_s
+
   end
 
 end

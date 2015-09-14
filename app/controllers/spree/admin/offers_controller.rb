@@ -11,7 +11,7 @@ module Spree
         @offer = Offer.update(params[:offer_id], counter_price: currency_param_to_f(params[:counter_price]))
         OfferMailer.counter_offer(@offer).deliver
 
-        redirect_to admin_offers_path, notice: t('offer.counter_offer_sent')
+        redirect_to admin_offers_path, notice: t('counter_offer_sent')
       end
 
       def accepted
@@ -31,13 +31,13 @@ module Spree
         end
 
         @order.add_variant(@offer.variant)
-        @order.adjustments.create amount: (@offer.price - @order.total), label: "Desconto por oferta do dia #{@offer.created_at.strftime('%d/%m/%y às %H:%m')}"
+        @order.adjustments.create amount: (@offer.price - @order.total), label: "Discount created at #{@offer.created_at.strftime('%d/%m/%y %H:%m')}"
 
         if @order.save
           OfferMailer.accepted(@offer, @order).deliver
           redirect_to admin_offers_url
         else
-          redirect_to admin_offers_url, error: 'Erro ao salvar o pedido.'
+          redirect_to admin_offers_url, error: 'Error occured'
         end
       end
 

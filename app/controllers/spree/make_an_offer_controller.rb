@@ -11,12 +11,13 @@ module Spree
 
       case
       when offer_price == 0
-        flash[:error] = t('offer.offer_rejected_validation_0')
+        flash[:error] = t('offer_rejected_validation_0')
+        redirect_to :back and return
       else
         @offer = Offer.where(id: params[:offer_id], accepted_at: nil, rejected_at: nil).first
 
         if @offer.blank?
-          @offer = Offer.new(user_id: current_user.id, product_id: params[:offer_product_id], variant_id: params[:offer_variant_id])
+          @offer = Offer.new(user_id: spree_current_user.id, store_id: spree_current_store.id, product_id: params[:offer_product_id], variant_id: params[:offer_variant_id])
         else
           @offer.clear_counter_offer
         end
@@ -26,33 +27,33 @@ module Spree
 
         if @offer.save
           OfferMailer.pending(@offer).deliver
-          flash[:notice] = t('offer.offer_has_been_submitted')
+          flash[:notice] = t('offer_has_been_submitted')
         else
           if @offer.errors.any?
             flash[:error] = @offer.errors.messages.values.flatten.join
           else
-            flash[:error] = t('offer.offer_error_not_submitted')
+            flash[:error] = t('offer_error_not_submitted')
           end
         end
 
       end
 
       respond_to do |format|
-        format.html { redirect_to '/products/' + params[:offer_permalink] }
+        format.html { redirect_to product_path @offer.product }
       end
     end
 
     def accept_counter_offer
       @offer = Offer.update(params[:offer_id].to_i, counter_accepted: DateTime.now)
       OfferMailer.counter_offer_accepted(@offer).deliver
-      redirect_to root_path, notice: t('offer.counter_offer_accepted_submited')
+      redirect_to root_path, notice: t('counter_offer_accepted_submited')
     end
 
     private
 
     def auth_user
       session["user_return_to"] = request.referer
-      redirect_to login_path unless current_user.present?
+      redirect_to login_path unless spree_current_user.present?
     end
 
     def currency_param_to_f(string)
