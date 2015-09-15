@@ -46,7 +46,7 @@ module Spree
     def accept_counter_offer
       @offer = Offer.update(params[:offer_id].to_i, counter_accepted: DateTime.now)
       OfferMailer.counter_offer_accepted(@offer).deliver
-      redirect_to root_path, notice: t('counter_offer_accepted_submited')
+      redirect_to product_path(@offer.product), notice: t('counter_offer_accepted_submited')
     end
 
     private

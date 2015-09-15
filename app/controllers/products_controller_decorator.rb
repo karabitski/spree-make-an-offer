@@ -15,8 +15,7 @@ Spree::ProductsController.class_eval do
     else
       @offer_expires_at = @offer.expires_at.strftime('%m/%d/%Y')
     end
-
-    @offer_price = Spree::Money.new(@offer.price, no_currency: true).to_s
+    @offer_price = Spree::Money.new(@offer.price_accepted, no_currency: true).to_s
 
   end
 

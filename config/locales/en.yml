@@ -33,3 +33,5 @@ en:
   update_offer: "Update offer"
   accept_offer: 'Accept offer'
   reject_offer: 'Reject offer'
+  counter_offer_sent: 'Counter offer sent'
+  counter_offer_accepted_submited: 'Counter offer accepted'

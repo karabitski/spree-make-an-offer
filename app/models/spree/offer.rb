@@ -24,6 +24,10 @@ module Spree
       errors.add(:price, I18n.t('offer_error_low_price')) if self.price < minimum_price
     end
 
+    def price_accepted
+      counter_accepted && counter_price ? counter_price : price
+    end
+
     private
 
     def offer_minimum_price_percent

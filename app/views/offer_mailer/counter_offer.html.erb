@@ -1,6 +1,6 @@
 You offer received an counter offer!
 
-The suggested price is <% @offer.counter_price %>.
+The suggested price is $<%= @offer.counter_price %>.
 
 <% if Rails.env == 'development' %>
   You can accept this offer by clicking <%= link_to 'here', "http://localhost:3000/accept-counter-offer/#{@offer.id}" %>.
