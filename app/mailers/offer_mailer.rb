@@ -25,9 +25,8 @@ class OfferMailer < Spree::BaseMailer
     mail(to: offer.store.user.email, from: from_address, subject: subject)
   end
 
-  def accepted(offer, order)
+  def accepted(offer)
     @offer = offer
-    @order = order
     subject = "#{Spree::Config[:site_name]} - #{t('offer.email.accepted.subject')} - #{offer.product.name}"
     mail(to: @offer.user.email, from: from_address, subject: subject)
   end

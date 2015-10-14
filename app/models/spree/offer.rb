@@ -28,6 +28,10 @@ module Spree
       counter_accepted && counter_price ? counter_price : price
     end
 
+    def accepted?
+      rejected_at.nil? && ( counter_price.present? ? counter_accepted.present? : accepted_at.present? )
+    end
+
     private
 
     def offer_minimum_price_percent

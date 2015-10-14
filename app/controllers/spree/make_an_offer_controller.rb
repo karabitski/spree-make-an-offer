@@ -17,7 +17,11 @@ module Spree
         @offer = Offer.where(id: params[:offer_id], accepted_at: nil, rejected_at: nil).first
 
         if @offer.blank?
-          @offer = Offer.new(user_id: spree_current_user.id, store_id: spree_current_store.id, product_id: params[:offer_product_id], variant_id: params[:offer_variant_id])
+          product = Spree::Product.find(params[:offer_product_id])
+          @offer = Offer.new(user_id: spree_current_user.id,
+                             store_id: product.store_id,
+                             product_id: product.id,
+                             variant_id: params[:offer_variant_id])
         else
           @offer.clear_counter_offer
         end
@@ -52,7 +56,7 @@ module Spree
     private
 
     def auth_user
-      session["user_return_to"] = request.referer
+      session["spree_user_return_to"] = request.referer
       redirect_to login_path unless spree_current_user.present?
     end
 

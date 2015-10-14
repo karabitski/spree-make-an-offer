@@ -15,25 +15,26 @@ module Spree
       end
 
       def accepted
-        @offer = Offer.update(params[:offer_id], :accepted_at => Date.today)
+        @offer = Offer.update(params[:offer_id], accepted_at: Date.today, rejected_at: nil)
 
-        if @offer.user.orders.incomplete.size > 1
-          @order = @offer.user.orders.incomplete.last
-        else
-          @order = @offer.user.orders.incomplete.first
-        end
+        # if @offer.user.orders.incomplete.size > 1
+        #   @order = @offer.user.orders.incomplete.last
+        # else
+        #   @order = @offer.user.orders.incomplete.first
+        # end
 
-        if @order.nil?
-          @order = @offer.user.orders.create
-        else
-          @order.empty!
-          @order.save
-        end
+        # if @order.nil?
+        #   @order = @offer.user.orders.create
+        # else
+        #   @order.empty!
+        #   @order.save
+        # end
 
-        @order.add_variant(@offer.variant)
-        @order.adjustments.create amount: (@offer.price - @order.total), label: "Discount created at #{@offer.created_at.strftime('%d/%m/%y %H:%m')}"
+        # @order.add_variant(@offer.variant)
+        # @order.adjustments.create amount: (@offer.price - @order.total), label: "Discount created at #{@offer.created_at.strftime('%d/%m/%y %H:%m')}"
 
-        if @order.save
+        # if @order.save
+        if @offer
           OfferMailer.accepted(@offer, @order).deliver
           redirect_to admin_offers_url
         else
@@ -42,7 +43,7 @@ module Spree
       end
 
       def rejected
-        @offer = Offer.update(params[:offer_id], :rejected_at => Date.today)
+        @offer = Offer.update(params[:offer_id], rejected_at: Date.today, accepted_at: nil)
         OfferMailer.rejected(@offer).deliver
         redirect_to admin_offers_url
       end
