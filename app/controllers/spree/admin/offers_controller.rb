@@ -50,7 +50,7 @@ module Spree
       private
 
       def currency_param_to_f(string)
-        string.gsub('.', '').gsub(',', '.').to_f
+        string.gsub(',', '.').to_f
       end
 
     end

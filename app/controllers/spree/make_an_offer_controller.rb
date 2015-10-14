@@ -57,7 +57,7 @@ module Spree
     end
 
     def currency_param_to_f(string)
-      string.gsub('.', '').gsub(',', '.').to_f
+      string.gsub(',', '.').to_f
     end
 
     def offer_expiration_days
