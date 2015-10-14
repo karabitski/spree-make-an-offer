@@ -35,7 +35,7 @@ module Spree
 
         # if @order.save
         if @offer
-          OfferMailer.accepted(@offer, @order).deliver
+          OfferMailer.accepted(@offer).deliver
           redirect_to admin_offers_url
         else
           redirect_to admin_offers_url, error: 'Error occured'

@@ -68,8 +68,8 @@
       </td>
       <td class="actions">
         <% if offer.accepted_at.nil? && offer.rejected_at.nil? %>
-          <%= link_to_with_icon "icon-capture", t('accept_offer'), accepted_admin_offers_path(offer), no_text: true, data: {action: 'capture'} %>
-          <%= link_to_with_icon "icon-void", t('reject_offer'), rejected_admin_offers_path(offer), no_text: true, data: {action: 'void'} %>
+          <%= link_to "Accept", accepted_admin_offers_path(offer) %>
+          <%= link_to "Reject", rejected_admin_offers_path(offer) %>
         <% end %>
       </td>
     </tr><% end %>
