@@ -9,8 +9,6 @@
       <div id="product-offer" class='col-md-4'>
         <h3><%= t("make_an_offer") %></h3>
 
-        <h4><%= t('make_an_offer_subtitle')%></h4>
-
         <%= content_tag :p, link_to(t('make_another_offer'), 'javascript:;', onclick: '$("#offer_fields").toggle();') if @offer.accepted_at.present? %>
         <div id="offer_fields" class="input-group" style="<%= 'display:none;' if @offer.accepted_at.present? %>">
           <%= text_field_tag 'offer_price', '', id: 'offer-price',class: "title form-control", size: 8, placeholder: @offer_price %>
