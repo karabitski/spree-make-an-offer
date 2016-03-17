@@ -13,6 +13,9 @@ module Spree
       when offer_price == 0
         flash[:error] = t('offer_rejected_validation_0')
         redirect_to :back and return
+      when offer_price <= params[:offer_previous_price].to_i
+        flash[:error] = "Your offer is lower than highest offer price. Please make an offer higher than $#{params[:offer_previous_price]}"
+        redirect_to :back and return
       else
         @offer = Offer.where(id: params[:offer_id], accepted_at: nil, rejected_at: nil).first
 
@@ -32,7 +35,7 @@ module Spree
         if @offer.save
           @offer.store.owner.notify("Offer pending", render_to_string('offer_mailer/pending.txt.erb'))
           # OfferMailer.pending(@offer).deliver
-          flash[:notice] = t('offer_has_been_submitted')
+          flash[:notice] = "Your offer has been sent and will be reviewed shortly!"
         else
           if @offer.errors.any?
             flash[:error] = @offer.errors.messages.values.flatten.join
