@@ -11,7 +11,7 @@ Spree::ProductsController.class_eval do
 
     if @offer == nil
       @offer = Spree::Offer.new(:price => 0.00)
-      @offer_expires_at = (Date.today + 5).strftime('%m/%d/%Y')
+      @offer_expires_at = (Date.today + 3).strftime('%m/%d/%Y')
     else
       @offer_expires_at = @offer.expires_at.strftime('%m/%d/%Y')
     end

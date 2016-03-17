@@ -30,7 +30,8 @@ module Spree
         @offer.expires_at = DateTime.now + offer_expiration_days.days
 
         if @offer.save
-          OfferMailer.pending(@offer).deliver
+          @offer.store.owner.notify("Offer pending", render_to_string('offer_mailer/pending.txt.erb'))
+          # OfferMailer.pending(@offer).deliver
           flash[:notice] = t('offer_has_been_submitted')
         else
           if @offer.errors.any?
@@ -48,8 +49,10 @@ module Spree
     end
 
     def accept_counter_offer
-      @offer = Offer.update(params[:offer_id].to_i, counter_accepted: DateTime.now)
-      OfferMailer.counter_offer_accepted(@offer).deliver
+      @offer = spree_current_user.offers.find(params[:offer_id].to_i)
+      @offer.update_attributes(counter_accepted: DateTime.now)
+      @offer.store.owner.notify("Counter offer accepted", render_to_string('offer_mailer/counter_offer_accepted.txt.erb'))
+      # OfferMailer.counter_offer_accepted(@offer).deliver
       redirect_to product_path(@offer.product), notice: t('counter_offer_accepted_submited')
     end
 
@@ -68,7 +71,7 @@ module Spree
       if Spree::Config.offer_expiration.present?
         Spree::Config.offer_expiration.to_i
       else
-        5
+        3
       end
     end
 

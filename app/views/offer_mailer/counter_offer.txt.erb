@@ -1,0 +1,2 @@
+You received a counter offer of $<%= @offer.counter_price %> for the <%= link_to @offer.product.name, product_path(@offer.product) %> .
+You can accept this offer by clicking <%= link_to 'here', Rails.env == 'development' ? "http://localhost:3000/accept-counter-offer/#{@offer.id}" : "#{Spree::Config.site_url}/accept-counter-offer/#{@offer.id}" %>.
