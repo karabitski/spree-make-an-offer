@@ -4,11 +4,11 @@ module Spree
     class OffersController < ResourceController
 
       def index
-        @offers = current_store.offers.pending_offers.order('spree_offers.created_at, spree_offers.product_id').page(params[:page])
+        @offers = spree_current_store.offers.pending_offers.order('spree_offers.created_at, spree_offers.product_id').page(params[:page])
       end
 
       def counter_offer
-        @offer = current_store.offers.find(params[:offer_id])
+        @offer = spree_current_store.offers.find(params[:offer_id])
         @offer.update_attributes(counter_price: currency_param_to_f(params[:counter_price]))
         @offer.user.notify("Counter offer issued", render_to_string('offer_mailer/counter_offer.txt.erb'))
         # OfferMailer.counter_offer(@offer).deliver
@@ -16,7 +16,7 @@ module Spree
       end
 
       def accepted
-        @offer = current_store.offers.find(params[:offer_id])
+        @offer = spree_current_store.offers.find(params[:offer_id])
         if @offer.update_attributes(accepted_at: Date.today, rejected_at: nil)
           @offer.user.notify("Offer accepted", render_to_string('offer_mailer/accepted.txt.erb'))
           # OfferMailer.accepted(@offer).deliver
@@ -27,7 +27,7 @@ module Spree
       end
 
       def rejected
-        @offer = current_store.offers.find(params[:offer_id])
+        @offer = spree_current_store.offers.find(params[:offer_id])
         @offer.update_attributes(rejected_at: Date.today, accepted_at: nil)
         @offer.user.notify("Offer rejected", render_to_string('offer_mailer/rejected.txt.erb'))
         # OfferMailer.rejected(@offer).deliver
