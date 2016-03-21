@@ -4,10 +4,20 @@ Spree::ProductsController.class_eval do
 
   def before_show
     @product = Spree::Product.friendly.find params[:id]
+    puts "------------------------"
+    puts "current_user -- #{spree_current_user.email}"
+    puts "------------------------"
     if spree_current_user.present?
       @offer = Spree::Offer.user_offers(spree_current_user.id).product_offers(@product.id).pending_offers.last # TODO: Get offer with max price
     end
+    puts "------------------------"
+    puts "@offer1 -- #{@offer.try(:attributes)}"
+    puts "------------------------"
     @previous = @product.offers.order('price DESC').first
+
+    puts "------------------------"
+    puts "@previous -- #{@previous.attributes}"
+    puts "------------------------"
 
     if @offer == nil
       @offer = Spree::Offer.new(:price => 0.00)
