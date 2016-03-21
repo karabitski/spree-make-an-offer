@@ -6,26 +6,18 @@
       <%= hidden_field_tag 'offer_variant_id', @product.master.id %>
       <%= hidden_field_tag 'offer_previous_price', (@previous.nil? ? '0.00' : @previous.price) %>
 
-      <div id="product-offer" class='col-md-4'>
-        <h3><%= t("make_an_offer") %></h3>
-
-        <%= content_tag :p, link_to(t('make_another_offer'), 'javascript:;', onclick: '$("#offer_fields").toggle();') if @offer.accepted_at.present? %>
-        <div id="offer_fields" class="input-group" style="<%= 'display:none;' if @offer.accepted_at.present? %>">
-          <%= text_field_tag 'offer_price', '', id: 'offer-price',class: "title form-control", size: 8, placeholder: @offer_price %>
-          <span class='input-group-btn'><%= button_tag t((@offer.product_id.nil? ? 'submit_offer' : 'update_offer')), :class => 'btn btn-success', :type => :submit %></span>
+      <% if @offer.accepted_at.present? %>
+        <p>Offer <%= Spree::Money.new(@offer.price_accepted).to_s %> Accepted</p>
+      <% else %>
+        <div id="product-offer" class='col-md-4'>
+          <h3><%= t("make_an_offer") %></h3>
+          <div id="offer_fields" class="input-group" style="<%= 'display:none;' if @offer.accepted_at.present? %>">
+            <%= text_field_tag 'offer_price', '', id: 'offer-price',class: "title form-control", size: 8, placeholder: @offer_price %>
+            <span class='input-group-btn'><%= button_tag t((@offer.product_id.nil? ? 'submit_offer' : 'update_offer')), :class => 'btn btn-success', :type => :submit %></span>
+          </div>
         </div>
+      <% end %>
 
-        <% if @offer.accepted_at.nil? %>
-          <% if @offer.product_id.nil? %>
-            <%= previous_price %>
-          <% else %>
-            <p id="current-offer"><%= t("offer.your_current_offer") %>: <%= @offer_price %></p>
-          <% end %>
-        <% else %>
-          <%= t('offer_accepted_text') %>
-          <%= @offer_price %>
-        <% end %>
-      </div>
     <% end %>
   </div>
 <% end %>
