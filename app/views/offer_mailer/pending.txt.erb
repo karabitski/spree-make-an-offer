@@ -1,2 +1,2 @@
-New offer of $<%= @offer.price %> for the <%= link_to @offer.product.name, product_path(@offer.product)%> has been submitted by the buyer. You can accept this offer by clicking <%= link_to 'here', Rails.env == 'development' ? "http://localhost:3000/admin/offers/accepted/#{@offer.id}" : "#{Spree::Config.site_url}/admin/offers/accepted/#{@offer.id}" %>.
+New offer of <%= Spree::Money.new(@offer.price).to_s %> for the <%= link_to @offer.product.name, product_path(@offer.product)%> has been submitted by the buyer. You can accept this offer by clicking <%= link_to 'here', Rails.env == 'development' ? "http://localhost:3000/admin/offers/accepted/#{@offer.id}" : "#{Spree::Config.site_url}/admin/offers/accepted/#{@offer.id}" %>.
 

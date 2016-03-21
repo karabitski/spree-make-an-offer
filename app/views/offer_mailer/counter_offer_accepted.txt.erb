@@ -1,1 +1,1 @@
-Your counter offer of $<%= @offer.price %> for the <%=  link_to @offer.product.name, product_path(@offer.product)%> has been accepted by the buyer.
+Your counter offer of <%= Spree::Money.new(@offer.price).to_s %> for the <%=  link_to @offer.product.name, product_path(@offer.product)%> has been accepted by the buyer.

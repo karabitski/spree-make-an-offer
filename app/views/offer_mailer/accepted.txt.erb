@@ -1,1 +1,1 @@
-Your offer of $<%= @offer.price %> for the <%= @offer.product.name %> has been accepted by the seller. Go to <%=  link_to "product page", product_path(@offer.product)%> to proceed with the purchase.
+Your offer of <%= Spree::Money.new(@offer.price).to_s %> for the <%= @offer.product.name %> has been accepted by the seller. Go to <%=  link_to "product page", product_path(@offer.product)%> to proceed with the purchase.

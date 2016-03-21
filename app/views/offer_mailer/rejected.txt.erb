@@ -1,1 +1,1 @@
-Your offer of $<%= @offer.price %> for the <%= @offer.product.name %> has been rejected by the seller.
+Your offer of <%= Spree::Money.new(@offer.price).to_s %> for the <%= @offer.product.name %> has been rejected by the seller.
