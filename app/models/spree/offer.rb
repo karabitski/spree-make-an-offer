@@ -12,6 +12,7 @@ module Spree
 
     scope :user_offers, ->(user_id) { where(user_id: user_id) }
     scope :product_offers, ->(product_id) { where(product_id: product_id) }
+    scope :variant_offers, ->(variant_id) { where(variant_id: variant_id) }
     scope :pending_offers, ->(){ where("spree_offers.expires_at >= ?", Date.today.to_s(:db))}
 
     def clear_counter_offer
