@@ -1,9 +1,8 @@
 Spree::ProductsController.class_eval do
-  before_filter :before_show, :only => [:show]
-  helper :make_an_offer
+  # before_filter :before_show, :only => [:show]
+  append_before_action :before_show, only: :show
 
   def before_show
-    @product = Spree::Product.friendly.find params[:id]
     if spree_current_user.present?
       @offer = Spree::Offer.user_offers(spree_current_user.id).product_offers(@product.id).pending_offers.last # TODO: Get offer with max price
     end

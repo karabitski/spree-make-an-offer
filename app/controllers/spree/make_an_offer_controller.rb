@@ -25,6 +25,7 @@ module Spree
                              store_id: product.store_id,
                              product_id: product.id,
                              variant_id: params[:offer_variant_id])
+          new_record = true
         else
           @offer.clear_counter_offer
         end
@@ -33,6 +34,7 @@ module Spree
         @offer.expires_at = DateTime.now + offer_expiration_days.days
 
         if @offer.save
+          increment_offer_count if new_record
           @offer.store.owner.notify("Offer pending", render_to_string('offer_mailer/pending.txt.erb'))
           # OfferMailer.pending(@offer).deliver
           flash[:notice] = "Your offer has been sent and will be reviewed shortly!"
@@ -60,6 +62,10 @@ module Spree
     end
 
     private
+
+    def increment_offer_count
+      Spree::Product.increment_counter(:offer_count, @offer.product_id)
+    end
 
     def auth_user
       session["spree_user_return_to"] = request.referer
