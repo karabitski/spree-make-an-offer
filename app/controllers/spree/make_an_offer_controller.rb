@@ -1,11 +1,13 @@
 module Spree
   class MakeAnOfferController < ApplicationController
 
-    before_filter :auth_user, only: :create
-
     def create
       redirect_to root_path, alert: t('offer_module_disabled') and return unless (Spree::Config.offer_module.present? && Spree::Config.offer_module)
-
+      unless spree_current_user
+        flash[:error] = "You must log in to make an offer."
+        redirect_to :back || root_path
+        return
+      end
       # Fix when current_user.nil?
       offer_price = currency_param_to_f(params[:offer_price])
 
