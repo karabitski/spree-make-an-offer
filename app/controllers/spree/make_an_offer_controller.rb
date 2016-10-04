@@ -2,22 +2,19 @@ module Spree
   class MakeAnOfferController < ApplicationController
 
     def create
-      redirect_to root_path, alert: t('offer_module_disabled') and return unless (Spree::Config.offer_module.present? && Spree::Config.offer_module)
       unless spree_current_user
-        flash[:error] = "You must log in to make an offer."
-        redirect_to :back || root_path
-        return
+        render_error "You must log in to make an offer." and return
       end
       # Fix when current_user.nil?
       offer_price = currency_param_to_f(params[:offer_price])
 
       case
       when offer_price == 0
-        flash[:error] = t('offer_rejected_validation_0')
-        redirect_to :back and return
+        render_error t('offer_rejected_validation_0')
+        return
       when offer_price <= params[:offer_previous_price].to_i
-        flash[:error] = "Your offer is lower than highest offer price. Please make an offer higher than $#{params[:offer_previous_price]}"
-        redirect_to :back and return
+        render_error "Your offer is lower than highest offer price. Please make an offer higher than $#{params[:offer_previous_price]}"
+        return
       else
         @offer = Offer.where(id: params[:offer_id], accepted_at: nil, rejected_at: nil).first
 
@@ -39,18 +36,20 @@ module Spree
           increment_offer_count if new_record
           @offer.store.owner.notify("Offer pending", render_to_string('offer_mailer/pending.txt.erb'))
           # OfferMailer.pending(@offer).deliver
+          send_message if params[:message].present?
           flash[:notice] = "Your offer has been sent and will be reviewed shortly!"
         else
           if @offer.errors.any?
-            flash[:error] = @offer.errors.messages.values.flatten.join
+            render_error @offer.errors.messages.values.flatten.join
+            return
           else
-            flash[:error] = t('offer_error_not_submitted')
+            render_error t('offer_error_not_submitted')
+            return
           end
         end
-
       end
-
       respond_to do |format|
+        format.json { render json: { success: true, message: flash[:notice] } }
         format.html { redirect_to product_path @offer.product }
       end
     end
@@ -64,6 +63,35 @@ module Spree
     end
 
     private
+
+    def render_error(message)
+      respond_to do |format|
+        format.json { render json: { success: false, message: message } }
+        format.html
+      end
+    end
+
+    def send_message
+      return if fail_if_no_user
+    	@recipient = @offer.product.owner
+
+    	@receipt = spree_current_user.send_message @recipient, params[:message], "New #{@offer.product.name} offer"
+      if @receipt.errors.blank?
+        spree_current_user.create_activity :new_message
+      else
+        @receipt.errors.full_messages.join('. ')
+      end
+    end
+
+    def fail_if_no_user
+  		no_user = !spree_current_user
+  		respond_to do |format|
+  			format.json do
+  				render json: { success: false, errors: "You must login in to send a message." } if no_user
+  			end
+  		end
+  		no_user
+  	end
 
     def increment_offer_count
       Spree::Product.increment_counter(:offer_count, @offer.product_id)

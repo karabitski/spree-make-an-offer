@@ -1,6 +1,6 @@
 Spree::Core::Engine.add_routes do
 
-  resources :make_an_offer, only: :create
+  resources :make_an_offer, only: :create, defaults: {format: 'json'}
 
   namespace :admin do
     resources :offers
